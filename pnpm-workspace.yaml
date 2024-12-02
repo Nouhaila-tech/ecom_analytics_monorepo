@@ -1,0 +1,4 @@
+packages:
+  - monorepo/backend
+  - monorepo/frontend
+  - monorepo/shared  
