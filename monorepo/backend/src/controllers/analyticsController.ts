@@ -70,3 +70,41 @@ export const getTrendingProducts = async(req:Request, res:Response): Promise<voi
     res.status(500).json({ message: 'Error fetching trending products', error });
   }
 };
+
+
+export const getCategorySales = async (req:Request, res: Response): Promise<void> => {
+    try{
+        const categorySales = await Sale.aggregate([
+            {
+                $lookup: {
+                  from:'products', 
+                  localField: 'ProductID',
+                  foreignField:'ProductID',
+                  as:'productInfo',
+                },
+              },
+              { $unwind:'$productInfo' }, 
+              {
+                $group: {
+                  _id:'$productInfo.Category', 
+                  totalSales: {$sum:'$TotalAmount' },
+                  totalQuantity: {$sum:'$Quantity'}, 
+                },
+              },
+        ]);
+
+        const totalAmount=categorySales.reduce((sum, category) => sum + category.totalSales,0);
+        const categorySalesPercentage = categorySales.map((category)=>{
+            const percentage=((category.totalSales/totalAmount)*100).toFixed(2);
+            return{
+                category: category._id,
+                totalSales: category.totalSales,
+                totalQuantity: category.totalQuantity,
+                percentage: percentage+'%',
+            };
+        });
+        res.status(200).json(categorySalesPercentage);
+    }catch(error){
+        res.status(500).json({message:'error fetching category sales',error})
+    }
+}
