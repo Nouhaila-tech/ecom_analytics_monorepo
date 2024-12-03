@@ -3,6 +3,7 @@ import mongoose from 'mongoose';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import productRoutes from './routes/productRoutes';
+import analyticsRoutes from './routes/analyticsRoutes';
 
 dotenv.config();
 
@@ -13,6 +14,7 @@ const MONGO_URI = process.env.MONGO_URI!;
 app.use(cors());
 app.use(express.json());
 app.use('/api/products', productRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 
 mongoose.connect(MONGO_URI)
