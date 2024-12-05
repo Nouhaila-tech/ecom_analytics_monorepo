@@ -2,42 +2,90 @@ import { Request, Response} from 'express';
 import Sale from '../models/Sale';
 import Product from '../models/Product';
 
-export const getTotalSales = async (req: Request, res:Response): Promise<void>=> {
-    try {
-        const { startDate, endDate } = req.query;
-        if (!startDate || !endDate) {
-            res.status(400).json({ message: "Provide start date & end date"});
-            return;
-        }
+export const getTotalSales = async (req: Request, res: Response): Promise<void> => {
+  try {
+    const { startDate, endDate } = req.query;
 
-        const startD = new Date (startDate as string).toISOString().split('T')[0];
-        const endD = new Date (endDate as string).toISOString().split('T')[0];
-
-        if(isNaN(new Date(startD).getTime()) || isNaN(new Date(endD).getTime())) {
-            res.status(400).json({ message: "Date format invalid"});
-            return;
-        }
-
-        const totalSales = await Sale.aggregate([
-            {
-                $match:{
-                    Date: {$gte: startD, $lte: endD},
-                },
-            },
-            {
-                $group: {
-                    _id: null,
-                    total: {$sum: "$TotalAmount"},
-                },
-            },
-        ]);
-
-        const total = totalSales.length > 0 ? totalSales[0].total : 0;
-        res.status(200).json({ totalSales: total});
-    } catch (error) {
-        res.status(500).json({ message: "Error calculating total sales", error});
+    // Validate start and end dates
+    if (!startDate || !endDate) {
+      res.status(400).json({ message: "Provide both start date & end date" });
+      return;
     }
+
+    // Parse and validate date formats
+    const startD = new Date(startDate as string);
+    const endD = new Date(endDate as string);
+
+    if (isNaN(startD.getTime()) || isNaN(endD.getTime())) {
+      res.status(400).json({ message: "Invalid date format. Use YYYY-MM-DD" });
+      return;
+    }
+
+    // Format dates as ISO strings (date only)
+    const formattedStart = startD.toISOString().split('T')[0];
+    const formattedEnd = endD.toISOString().split('T')[0];
+
+    // Aggregate total sales based on the date range
+    const totalSales = await Sale.aggregate([
+      {
+        $match: {
+          Date: { $gte: formattedStart, $lte: formattedEnd },
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          total: { $sum: "$TotalAmount" },
+        },
+      },
+    ]);
+
+    // Calculate the total sales amount
+    const total = totalSales.length > 0 ? totalSales[0].total : 0;
+
+    // Aggregate monthly sales with Date conversion
+    const monthlySales = await Sale.aggregate([
+      {
+        $match: {
+          Date: { $gte: formattedStart, $lte: formattedEnd },
+        },
+      },
+      {
+        $project: {
+          // Convert Date string to Date type
+          month: {
+            $month: {
+              $toDate: "$Date",  // Convert Date string to Date object
+            },
+          },
+          totalAmount: "$TotalAmount",
+        },
+      },
+      {
+        $group: {
+          _id: "$month",
+          total: { $sum: "$totalAmount" },
+        },
+      },
+      {
+        $sort: { _id: 1 }, // Sort by month
+      },
+    ]);
+
+    // Fill in missing months with sales = 0
+    const allMonths = Array.from({ length: 12 }, (_, index) => index + 1);
+    const formattedMonthlySales = allMonths.map((month) => {
+      const monthData = monthlySales.find((sale) => sale._id === month);
+      return { month, totalSales: monthData ? monthData.total : 0 };
+    });
+
+    res.status(200).json({ totalSales: total, monthlySales: formattedMonthlySales });
+  } catch (error) {
+    console.error("Error fetching total sales and monthly sales:", error);
+    res.status(500).json({ message: "Error calculating total sales", error });
+  }
 };
+
 
 
 export const getTrendingProducts = async(req:Request, res:Response): Promise<void> => {
@@ -51,7 +99,7 @@ export const getTrendingProducts = async(req:Request, res:Response): Promise<voi
                 },
               },
               {$sort: {totalQuantity: -1}}, 
-              {$limit:3}, 
+              {$limit:5}, 
         ]);
 
         const populatedProducts = await Promise.all(

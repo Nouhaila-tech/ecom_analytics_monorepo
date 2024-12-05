@@ -1,11 +1,14 @@
-import './assets/main.css'
+import './assets/main.css'; 
+import './css/style.css'; 
+import 'flatpickr/dist/flatpickr.css';
 
-import { createApp } from 'vue'
-import App from './App.vue'
-import router from './router'
+import { createApp } from 'vue';
+import App from './App.vue';
+import router from './router';
 
-const app = createApp(App)
+const app = createApp(App);
 
-app.use(router)
+// Use the router
+app.use(router);
 
-app.mount('#app')
+app.mount('#app');

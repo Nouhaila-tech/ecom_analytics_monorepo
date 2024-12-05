@@ -1,5 +1,24 @@
 {
-  "files": [],
+  "compilerOptions": {
+    "baseUrl": ".",
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "paths": {
+      "@tailwindConfig": ["./tailwind.config.js"],
+      "@/*": ["src/*"]
+    },
+    "target": "esnext",
+    "module": "esnext",
+    "moduleResolution": "node",
+    "jsx": "preserve",
+    "strict": true,
+    "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "resolveJsonModule": true,
+    "lib": ["esnext", "dom"],
+    "types": ["node", "chart.js"]
+  },
   "references": [
     {
       "path": "./tsconfig.node.json"
