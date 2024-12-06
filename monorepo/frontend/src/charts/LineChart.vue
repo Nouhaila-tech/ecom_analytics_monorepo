@@ -17,7 +17,7 @@ export default {
   name:'LineChart',
   props: {
     data: {
-      type: Object as () => ChartData<'line'>,  // Correctly type the data prop for line chart
+      type: Object as () => ChartData<'line'>,  
       required: true,
     },
     width: {

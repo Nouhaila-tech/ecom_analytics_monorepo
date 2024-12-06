@@ -3,17 +3,17 @@
   <div class="flex flex-col col-span-full sm:col-span-6 xl:col-span-4 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
     <!-- Datepicker -->
     <div class="px-5 pt-5 mb-4">
-      <p class="text-sm dark:text-gray-100">Select Date Range</p>
+      <p class="text-sm dark:text-gray-100">Séléctionner une période</p>
       <Datepicker @dateChange="handleDateChange" style="align-items: right;"/>
     </div>
 
     <!-- Total Sales -->
     <div class="px-5 pt-5">
       <header class="flex justify-between items-start mb-2">
-        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Total Sales</h2>
+        <h2 class="text-lg font-semibold text-gray-800 dark:text-gray-100">Ventes Totales</h2>
       </header>
 
-      <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Sales</div>
+      <div class="text-xs font-semibold text-gray-400 dark:text-gray-500 uppercase mb-1">Ventes</div>
       <div class="flex items-start">
         <div class="text-3xl font-bold text-gray-800 dark:text-gray-100 mr-2">
           ${{ totalSales.toFixed(2) }}

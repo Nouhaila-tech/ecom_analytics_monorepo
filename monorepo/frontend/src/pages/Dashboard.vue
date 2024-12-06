@@ -5,7 +5,7 @@
         <main class="grow">
 
           <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-5">Dashboard</h1>
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-5">: Outil Simplifié d'Analyse des Paniers d'Achat</h1>
 
 
                 <div class="sm:flex sm:justify-between sm:items-center mb-8">
@@ -22,6 +22,9 @@
 
                     <DashboardCardCategories/>
                     <ProductTable/>
+
+                    <DashboardCardProducts />
+
                   </div>
             </div>
           </div>
@@ -44,9 +47,10 @@ import CategorySalesTable from '@/components/CategorySalesTable.vue';
 import SalesByCategory from '@/components/SalesByCategory.vue';
 import DashboardCardCategories from '@/components/DashboardCard.vue';
 import ProductTable from '@/components/ProductTable.vue'
-import Datepicker from '../charts/Datepicker.vue'; // Datepicker component
-import type { ChartData, ChartDataset } from 'chart.js'; // Import ChartData type for 'line' chart
-import { getTotalSalesAndMonthlyData } from '@/services/analyticsService'; // Service function
+import Datepicker from '../charts/Datepicker.vue'; 
+import type { ChartData, ChartDataset } from 'chart.js'; 
+import { getTotalSalesAndMonthlyData } from '@/services/analyticsService'; 
+import DashboardCardProducts from '@/components/DashboardCardProducts.vue';
 
 
 export default defineComponent({
@@ -58,7 +62,7 @@ export default defineComponent({
     DashboardCardCategories,
     ProductTable,
     Datepicker,
-
+    DashboardCardProducts
   },
 
   setup() {

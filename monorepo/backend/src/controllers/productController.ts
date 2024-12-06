@@ -1,5 +1,6 @@
 import {Request, Response } from 'express';
 import Product from '../models/Product';
+import Sale from '../models/Sale';
 
 export const getProducts = async (req:Request, res:Response) => {
     try {
@@ -29,3 +30,35 @@ export const getProductById = async (req:Request, res:Response) => {
         res.status(500).json({message:"error fetching product", error:error});
     }
 }
+
+export const getProductSales = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const productSales = await Sale.aggregate([
+        {
+          $group: {
+            _id: '$ProductID',
+            totalQuantity: { $sum: '$Quantity' },
+            totalSales: { $sum: '$TotalAmount' },
+          },
+        },
+        { $sort: { totalSales: -1 } },
+      ]);
+  
+      const populatedProducts = await Promise.all(
+        productSales.map(async (product) => {
+          const productDetails = await Product.findOne({ ProductID: product._id });
+          return {
+            productName: productDetails?.ProductName || 'Unknown Product',
+            totalQuantity: product.totalQuantity,
+            totalSales: product.totalSales,
+          };
+        })
+      );
+  
+      res.status(200).json(populatedProducts);
+    } catch (error) {
+      console.error('Error fetching product sales:', error);
+      res.status(500).json({ message: 'Error fetching product sales', error });
+    }
+  };
+  

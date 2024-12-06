@@ -30,6 +30,12 @@ export interface CategorySales {
   percentage: string;
 }
 
+export interface ProductSales {
+  productName: string;
+  totalQuantity: number;
+  totalSales: number;
+}
+
 export const getAllProducts = async (): Promise<Product[]> => {
   try {
     const response = await axios.get<Product[]>('/api/products');
@@ -77,6 +83,19 @@ export const getCategorySales = async (): Promise<CategorySales[]> => {
     return [];
   }
 };
+
+
+export const getProductSales = async (): Promise<ProductSales[]> => {
+  try {
+    const response = await axios.get<ProductSales[]>('/api/analytics/product_sales/1');
+    console.log('API Response (Product Sales):', response.data);
+    return response.data;
+  } catch (error) {
+    console.error('Error fetching product sales:', error);
+    return [];
+  }
+};
+
 
 const handleAxiosError = (error: unknown,message: string): void => {
   if (axios.isAxiosError(error)) {

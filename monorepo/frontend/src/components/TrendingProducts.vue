@@ -2,7 +2,7 @@
 <template>
   <div class="col-span-full xl:col-span-8 bg-white dark:bg-gray-800 shadow-sm rounded-xl">
     <header class="px-5 py-4 border-b border-gray-100 dark:border-gray-700/60">
-      <h2 class="font-semibold text-gray-800 dark:text-gray-100">Trending Products</h2>
+      <h2 class="font-semibold text-gray-800 dark:text-gray-100">Les produits Trending </h2>
     </header>
     <div class="p-3">
       <!-- Table -->
@@ -12,13 +12,13 @@
           <thead class="text-xs uppercase text-gray-400 dark:text-gray-500 bg-gray-50 dark:bg-gray-700 dark:bg-opacity-50">
             <tr>
               <th class="p-2">
-                <div class="font-semibold text-left">Product Name</div>
+                <div class="font-semibold text-left">Nom u produit</div>
               </th>
               <th class="p-2">
-                <div class="font-semibold text-center">Quantity Sold</div>
+                <div class="font-semibold text-center">Quantité Vendue</div>
               </th>
               <th class="p-2">
-                <div class="font-semibold text-center">Total Sales</div>
+                <div class="font-semibold text-center">Ventes Totales</div>
               </th>
             </tr>
           </thead>
