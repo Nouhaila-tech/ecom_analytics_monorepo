@@ -9,7 +9,7 @@ import { ref, onMounted, onUnmounted, watch } from 'vue';
 import { useDark } from '@vueuse/core';
 import { Chart, LineController, LinearScale, PointElement, LineElement, Tooltip, TimeScale } from 'chart.js';
 import 'chartjs-adapter-moment';
-import { ChartData } from 'chart.js';
+import { ChartData,Point  } from 'chart.js';
 
 Chart.register(LineController, LinearScale, PointElement, LineElement, Tooltip, TimeScale);
 
@@ -17,7 +17,7 @@ export default {
   name: 'LineChart',
   props: {
     data: {
-      type: Object as () => ChartData<'line'>, // Typed as Chart.js 'line' data
+      type: Object as () => ChartData<'line', (number | Point | null)[], unknown>,
       required: true,
     },
     width: {

@@ -4,7 +4,6 @@
         <h2 class="font-semibold text-gray-800 dark:text-gray-100">Product Sales Distribution</h2>
       </header>
       <div class="grow">
-        <!-- Bar chart for product sales percentage -->
         <BarChart01 :data="chartData" :width="595" :height="260" />
       </div>
     </div>
@@ -12,14 +11,14 @@
   
   <script>
   import { ref, onMounted } from 'vue';
-  import BarChart01 from '@/charts/BarChart01.vue'; // Import the BarChart component
-  import { getProductSales } from '@/services/analyticsService'; // Fetch product sales data
+  import BarChart01 from '@/charts/BarChart01.vue';
+  import { getProductSales } from '@/services/analyticsService'; 
   
-  // Import utilities for colors
   import { tailwindConfig } from '@/utils/Utils';
   
   export default {
     name: 'DashboardCardProducts',
+    props: {},
     components: { BarChart01 },
     setup() {
       const chartData = ref({

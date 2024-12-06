@@ -2,9 +2,9 @@
 export default {
   content: [
     './index.html',
-    './src/**/*.{vue,js,ts,jsx,tsx}', // Ensure the content is properly set for the tailwind class scanning
+    './src/**/*.{vue,js,ts,jsx,tsx}', 
   ],
-  darkMode: 'class', // 'class' mode to control dark mode via a class
+  darkMode: 'class', 
   theme: {
     extend: {
       colors: {

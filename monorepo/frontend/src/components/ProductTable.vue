@@ -70,6 +70,7 @@
   
   export default defineComponent({
     name:'ProductTable',
+    props: {},
     setup() {
       const products =ref<Product[]>([]);
       const currentPage =ref(1);

@@ -56,6 +56,7 @@ export interface Product {
 
 export default defineComponent({
   name: 'TrendingProducts',
+  props: {},
   setup() {
     const trendingProducts = ref<Product[]>([]);
 

@@ -1,7 +1,6 @@
 // Import Chart.js and Tailwind config utilities
 import { Chart, Tooltip } from 'chart.js';
 import { tailwindConfig, hexToRGB } from '../utils/Utils';
-import type { Config } from 'tailwindcss';
 
 // Register Chart.js Tooltip
 Chart.register(Tooltip);
@@ -21,7 +20,7 @@ Chart.defaults.plugins.tooltip.padding = 8;
 
 // Function that generates a gradient for line charts
 export const chartAreaGradient = (
-  ctx: CanvasRenderingContext2D,
+  ctx: CanvasRenderingContext2D | null,
   chartArea: { bottom: number; top: number },
   colorStops: { stop: number; color: string }[]
 ): CanvasGradient | string => {
@@ -37,36 +36,64 @@ export const chartAreaGradient = (
   return gradient;
 };
 
-// Extract and fallback values from Tailwind configuration
-const config = tailwindConfig() as Config;
+// Define a safe type for the Tailwind configuration
+type TailwindColors = {
+  [key: string]: string | { [key: string]: string };
+};
 
+type TailwindConfig = {
+  theme: {
+    colors: TailwindColors;
+  };
+};
+
+// Get Tailwind configuration
+const config = tailwindConfig() as TailwindConfig;
+
+// Utility function to safely extract colors
+const getColor = (colorPath: string, fallback: string): string => {
+  const paths = colorPath.split('.');
+  let current: any = config.theme.colors;
+
+  for (const path of paths) {
+    if (current && typeof current === 'object' && path in current) {
+      current = current[path];
+    } else {
+      return fallback;
+    }
+  }
+
+  return typeof current === 'string' ? current : fallback;
+};
+
+// Extract and fallback values from Tailwind configuration
 export const chartColors = {
   textColor: {
-    light: config?.theme?.colors?.gray?.[400] || '#999999',  // Fallback for gray[400]
-    dark: config?.theme?.colors?.gray?.[500] || '#666666',   // Fallback for gray[500]
+    light: getColor('gray.400', '#999999'),
+    dark: getColor('gray.500', '#666666'),
   },
   gridColor: {
-    light: config?.theme?.colors?.gray?.[100] || '#f5f5f5',  // Fallback for gray[100]
-    dark: `rgba(${hexToRGB(config?.theme?.colors?.gray?.[700] || '#333333')}, 0.6)`, // Fallback for gray[700]
+    light: getColor('gray.100', '#f5f5f5'),
+    dark: `rgba(${hexToRGB(getColor('gray.700', '#333333'))}, 0.6)`,
   },
   backdropColor: {
-    light: config?.theme?.colors?.white || '#ffffff', // Fallback for white
-    dark: config?.theme?.colors?.gray?.[800] || '#1f2937', // Fallback for gray[800]
+    light: getColor('white', '#ffffff'),
+    dark: getColor('gray.800', '#1f2937'),
   },
   tooltipTitleColor: {
-    light: config?.theme?.colors?.gray?.[800] || '#1f2937', // Fallback for gray[800]
-    dark: config?.theme?.colors?.gray?.[100] || '#f5f5f5', // Fallback for gray[100]
+    light: getColor('gray.800', '#1f2937'),
+    dark: getColor('gray.100', '#f5f5f5'),
   },
   tooltipBodyColor: {
-    light: config?.theme?.colors?.gray?.[500] || '#6b7280', // Fallback for gray[500]
-    dark: config?.theme?.colors?.gray?.[400] || '#9ca3af', // Fallback for gray[400]
+    light: getColor('gray.500', '#6b7280'),
+    dark: getColor('gray.400', '#9ca3af'),
   },
   tooltipBgColor: {
-    light: config?.theme?.colors?.white || '#ffffff', // Fallback for white
-    dark: config?.theme?.colors?.gray?.[700] || '#374151', // Fallback for gray[700]
+    light: getColor('white', '#ffffff'),
+    dark: getColor('gray.700', '#374151'),
   },
   tooltipBorderColor: {
-    light: config?.theme?.colors?.gray?.[200] || '#e5e7eb', // Fallback for gray[200]
-    dark: config?.theme?.colors?.gray?.[600] || '#4b5563', // Fallback for gray[600]
+    light: getColor('gray.200', '#e5e7eb'),
+    dark: getColor('gray.600', '#4b5563'),
   },
 };

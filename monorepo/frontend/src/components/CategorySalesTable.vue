@@ -62,6 +62,7 @@
   
   export default defineComponent({
     name:'CategorySalesTable',
+    props: {},
     setup() {
       const categorySales = ref<CategorySales[]>([]);
   

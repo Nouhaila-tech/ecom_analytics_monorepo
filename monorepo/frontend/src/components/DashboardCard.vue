@@ -17,6 +17,7 @@
   
   export default {
     name:'DashboardCardCategories',
+    props: {},
     components: { BarChart03 },
     setup() {
       const chartData = ref({

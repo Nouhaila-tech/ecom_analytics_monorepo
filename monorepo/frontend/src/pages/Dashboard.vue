@@ -64,6 +64,7 @@ export default defineComponent({
     Datepicker,
     DashboardCardProducts
   },
+  props: {},
 
   setup() {
     const totalSales = ref(0);
