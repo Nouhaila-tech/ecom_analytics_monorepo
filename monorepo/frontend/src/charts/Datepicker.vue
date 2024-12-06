@@ -1,10 +1,10 @@
 <template>
-  <flat-pickr
-    class="form-input"
-    v-model="selectedDates"
+      <flat-pickr class="form-input pl-9 dark:bg-gray-800 text-gray-600 hover:text-gray-800 dark:text-gray-300 dark:hover:text-gray-100 font-medium w-[15.5rem]" 
+      v-model="selectedDates"
     :config="config"
-    @on-change="emitDateChange"
-  />
+    @on-change="emitDateChange"></flat-pickr>
+
+  
 </template>
 
 <script>

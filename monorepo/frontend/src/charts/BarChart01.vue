@@ -5,7 +5,7 @@
 </template>
 
 <script>
-import { ref, onMounted, onUnmounted } from 'vue';
+import { ref, onMounted, onUnmounted, watch } from 'vue';
 import {
   Chart,
   BarController,
@@ -45,63 +45,88 @@ export default {
     const canvas = ref(null);
     let chart = null;
 
-    onMounted(() => {
-      if (canvas.value) {
-        // Dynamically add colors to the dataset
-        props.data.datasets.forEach((dataset, index) => {
-          dataset.backgroundColor = dataset.data.map((_, i) => barColors[i % barColors.length]);
-          dataset.hoverBackgroundColor = dataset.data.map((_, i) => barColors[(i + 1) % barColors.length]);
-        });
-
-        chart = new Chart(canvas.value.getContext('2d'), {
-          type: 'bar',
-          data: props.data,
-          options: {
-            responsive: true,
-            indexAxis: 'y', // Horizontal bars
-            scales: {
-              y: {
-                beginAtZero: true,
-                max: 100, // Set the maximum value for percentage
-                title: {
-                  display: true,
-                  text: 'Percentage (%)',
-                },
-                ticks: {
-                  stepSize: 50, // Adjust step size for better readability
-                },
-              },
-              x: {
-                title: {
-                  display: true,
-                  text: 'Products',
-                },
-                ticks: {
-                  font: {
-                    size: 12, // Adjust font size for better visibility
-                  },
-                },
-              },
-            },
-            plugins: {
-              legend: {
-                display: false, // Hide legend
-              },
-              tooltip: {
-                callbacks: {
-                  label: (context) => `${context.raw}%`,
-                },
-              },
-            },
-            barThickness: 10, // Adjust bar thickness
-            maintainAspectRatio: false,
-          },
-        });
-      } else {
+    const initializeChart = () => {
+      if (!canvas.value) {
         console.error('Canvas is not available.');
+        return;
+      }
+
+      // Destroy the chart if it already exists
+      if (chart) {
+        chart.destroy();
+      }
+
+      // Dynamically add colors to the dataset
+      props.data.datasets.forEach((dataset, index) => {
+        dataset.backgroundColor = dataset.data.map((_, i) => barColors[i % barColors.length]);
+        dataset.hoverBackgroundColor = dataset.data.map((_, i) => barColors[(i + 1) % barColors.length]);
+      });
+
+      chart = new Chart(canvas.value.getContext('2d'), {
+        type: 'bar',
+        data: props.data,
+        options: {
+          responsive: true,
+          indexAxis: 'y', // Horizontal bars
+          scales: {
+            y: {
+              beginAtZero: true,
+              max: 100, // Set the maximum value for percentage
+              title: {
+                display: true,
+                text: 'Percentage (%)',
+              },
+              ticks: {
+                stepSize: 50, // Adjust step size for better readability
+              },
+            },
+            x: {
+              title: {
+                display: true,
+                text: 'Products',
+              },
+              ticks: {
+                font: {
+                  size: 12, // Adjust font size for better visibility
+                },
+              },
+            },
+          },
+          plugins: {
+            legend: {
+              display: false, // Hide legend
+            },
+            tooltip: {
+              callbacks: {
+                label: (context) => `${context.raw}%`,
+              },
+            },
+          },
+          barThickness: 10, // Adjust bar thickness
+          maintainAspectRatio: false,
+        },
+      });
+    };
+
+    // Initialize the chart on mount
+    onMounted(() => {
+      if (props.data) {
+        initializeChart();
       }
     });
 
+    // Watch for changes in the data prop
+    watch(
+      () => props.data,
+      (newData) => {
+        if (newData) {
+          initializeChart();
+        }
+      },
+      { deep: true } // Deep watch to detect nested changes
+    );
+
+    // Destroy the chart on unmount
     onUnmounted(() => {
       if (chart) chart.destroy();
     });

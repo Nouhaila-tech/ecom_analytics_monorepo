@@ -5,17 +5,16 @@
   </template>
   
   <script lang="ts">
-  import { ref, onMounted, onUnmounted } from 'vue';
+  import { ref, onMounted, onUnmounted, watch } from 'vue';
   import { Chart, BarController, BarElement, LinearScale, CategoryScale, Tooltip, Legend, ChartData } from 'chart.js';
   
-  // Register necessary chart components
   Chart.register(BarController, BarElement, LinearScale, CategoryScale, Tooltip, Legend);
   
   export default {
     name: 'BarChart03',
     props: {
       data: {
-        type: Object as () => ChartData<'bar'>,  // Ensure data is typed as 'bar' chart data
+        type: Object as () => ChartData<'bar'>, // Ensure data is typed as 'bar' chart data
         required: true,
       },
       width: {
@@ -28,46 +27,75 @@
       },
     },
     setup(props) {
-      const canvas = ref<HTMLCanvasElement | null>(null);  // Ref for canvas element
+      const canvas = ref<HTMLCanvasElement | null>(null); // Ref for canvas element
       let chart: Chart | null = null;
   
-      onMounted(() => {
-        if (canvas.value) {
-          const ctx = canvas.value.getContext('2d');
-          if (ctx) {
-            chart = new Chart(ctx, {
-              type: 'bar',
-              data: props.data,  // Use the data passed as a prop
-              options: {
-                indexAxis: 'y',  // Make the chart horizontal
-                responsive: true,
-                scales: {
-                  x: {
-                    stacked: true,  // Stack bars on the x-axis
-                    max: 100,  // You can adjust this value as needed
-                  },
-                  y: {
-                    stacked: true,  // Stack bars on the y-axis
+      const initializeChart = () => {
+        if (!canvas.value) {
+          console.error("Canvas is not available!");
+          return;
+        }
+        if (chart) {
+          chart.destroy();
+        }
+  
+        const ctx = canvas.value.getContext('2d');
+        if (ctx) {
+          chart = new Chart(ctx, {
+            type: 'bar',
+            data: props.data, 
+            options: {
+              indexAxis: 'y', 
+              responsive: true,
+              scales: {
+                x: {
+                  stacked: true, 
+                  max: 100, 
+                  ticks: {
+                    stepSize: 20,
                   },
                 },
-                plugins: {
-                  legend: {
-                    display: true,
-                    position: 'bottom',  // Position of the legend
-                  },
-                  tooltip: {
-                    callbacks: {
-                      label: (context) => `${context.raw}%`,  // Display percentage in tooltips
+                y: {
+                  stacked: true, 
+                  ticks: {
+                    font: {
+                      size: 12, 
                     },
                   },
                 },
-                maintainAspectRatio: false,  // Allow the chart to resize responsively
-                resizeDelay: 200,  // Delay for resizing the chart when window changes
               },
-            });
-          } else {
-            console.error("Failed to get canvas context!");
+              plugins: {
+                legend: {
+                  display: true,
+                  position: 'bottom', 
+                },
+                tooltip: {
+                  callbacks: {
+                    label: (context) => `${context.raw}%`, 
+                  },
+                },
+              },
+              maintainAspectRatio: false, 
+            },
+          });
+        } else {
+          console.error("Failed to get canvas context!");
+        }
+      };
+  
+      watch(
+        () => props.data,
+        (newData) => {
+          if (newData) {
+            initializeChart();
           }
+        },
+        { deep: true } 
+      );
+  
+      onMounted(() => {
+        if (props.data) {
+          initializeChart();
         }
       });
   
@@ -78,7 +106,7 @@
       });
   
       return {
-        canvas,  // Expose canvas ref
+        canvas, 
       };
     },
   };
@@ -90,5 +118,4 @@
     height: 100%;
   }
   </style>
-  
   

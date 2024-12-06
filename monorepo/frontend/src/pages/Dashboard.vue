@@ -5,7 +5,7 @@
         <main class="grow">
 
           <div class="px-4 sm:px-6 lg:px-8 py-8 w-full max-w-9xl mx-auto">
-            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-5">: Outil Simplifié d'Analyse des Paniers d'Achat</h1>
+            <h1 class="text-2xl md:text-3xl text-gray-800 dark:text-gray-100 font-bold mb-5">Outil Simplifié d'Analyse des Paniers d'Achat:</h1>
 
 
                 <div class="sm:flex sm:justify-between sm:items-center mb-8">
