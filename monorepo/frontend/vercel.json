@@ -1,0 +1,9 @@
+{
+    "rewrites": [
+      {
+        "source": "/api/(.*)",
+        "destination": "https://ecom-analytics-monorepo-ejeg.vercel.app/api/$1"
+      }
+    ]
+  }
+  

@@ -1,5 +1,6 @@
 import axios, { AxiosError } from 'axios';
 
+
 export interface Product {
   ProductID: number;
   ProductName: string;
